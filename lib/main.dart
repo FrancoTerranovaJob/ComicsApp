@@ -11,9 +11,7 @@ Future<void> main() async {
   await dotenv.load();
   configureDependencies();
 
-  final response = await getIt.get<IComicsApiProvider>().getComicDetail(
-      GetComicDetailRequest(
-          detailUrl: "https://comicvine.gamespot.com/api/issue/4000-153/"));
+  final response = await getIt.get<IComicsRepository>().getComics();
 
   runApp(const MyApp());
 }
