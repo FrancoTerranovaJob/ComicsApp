@@ -32,7 +32,7 @@ migrate_working_dir/
 .pub-cache/
 .pub/
 /build/
-/lib/di/*.config
+lib/di/.config.dart
 
 # Web related
 lib/generated_plugin_registrant.dart

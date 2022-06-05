@@ -19,7 +19,9 @@ class ComicsRepository implements IComicsRepository {
   Future<ComicList> getComics() async {
     try {
       final comicsResponse = await apiProvider.getComics(GetComicsRequest(
-          maxPageLength: 10, filters: _getFormattedDateFilter()));
+          maxPageLength: 10,
+          filters: RequestFilters(dateRange: _getFormattedDateFilter()),
+          offset: 0));
       final comicsList = comicsResponse.comics
           .map((comic) => Comic(
               originalImageUrl: comic.imageUrl,
@@ -46,6 +48,8 @@ class ComicsRepository implements IComicsRepository {
         comics: [], offset: 2, remainingComicsCount: 3, pagesCount: 4);
   }
 
+// si offset + number_of_page_results = number_of_total_results => ya se mostraron los ultimos resultados
+
   String _getFormattedDateFilter() {
     final startOfCurrentYear = DateTime(DateTime.now().year, 1, 1);
     final currentDate = DateTime.now();
@@ -54,8 +58,6 @@ class ComicsRepository implements IComicsRepository {
     final formattedCurrentDate = dateFormatter.format(currentDate);
     return '$formattedStartOfYearDate|$formattedCurrentDate';
   }
-
-// si offset + number_of_page_results = number_of_total_results => ya se mostraron los ultimos resultados
 
   DomainException _handleApiExceptions(ApiException apiException) {
     if (apiException is DioException) {

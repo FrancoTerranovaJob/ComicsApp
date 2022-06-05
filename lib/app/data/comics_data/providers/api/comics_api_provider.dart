@@ -12,20 +12,13 @@ import 'package:injectable/injectable.dart';
 @Singleton(as: IComicsApiProvider)
 class ComicsApiProvider implements IComicsApiProvider {
   static const key = String.fromEnvironment('API_KEY');
+
   final Dio http = getIt<Dio>();
 
   @override
-  Future<GetComicsResponse> getComics(GetComicsRequest getIssuesRequest) async {
+  Future<GetComicsResponse> getComics(GetComicsRequest getComicsRequest) async {
     try {
-      final queryParams = _getBaseQueryParams(
-          limit: getIssuesRequest.maxPageLength,
-          format: getIssuesRequest.responseFormat);
-      queryParams['offset'] = getIssuesRequest.offset;
-
-      if (getIssuesRequest.filters.isNotEmpty) {
-        queryParams['filter'] = getIssuesRequest.filters;
-      }
-
+      final queryParams = _setGetComicsQueryParams(getComicsRequest);
       final response = await http.get('/issues', queryParameters: queryParams);
 
       return GetComicsResponse.fromJson(response.data);
@@ -54,9 +47,34 @@ class ComicsApiProvider implements IComicsApiProvider {
     }
   }
 
+  Map<String, dynamic> _setGetComicsQueryParams(
+      GetComicsRequest getComicsRequest) {
+    final queryParams = _getBaseQueryParams(
+        limit: getComicsRequest.maxPageLength,
+        format: getComicsRequest.responseFormat);
+    queryParams['offset'] = getComicsRequest.offset;
+    final stFilters = _parseFiltersToString(getComicsRequest.filters);
+    if (stFilters.isNotEmpty) {
+      queryParams['filter'] = stFilters;
+    }
+    queryParams['sort'] = getComicsRequest.filters.order == OrderType.orderDESC
+        ? 'date_added:desc'
+        : 'date_added:asc';
+    return queryParams;
+  }
+
   Map<String, dynamic> _getBaseQueryParams(
       {required int limit, required String format}) {
     return {'api_key': key, 'format': format, 'limit': limit};
+  }
+
+  String _parseFiltersToString(RequestFilters filters) {
+    var filterString = '';
+
+    if (filters.dateRange.isNotEmpty && filters.dateRange.contains('|')) {
+      filterString = 'date_added:${filters.dateRange}';
+    }
+    return filterString;
   }
 
   DioException _handleDioError(DioError error) {
