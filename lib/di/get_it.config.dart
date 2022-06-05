@@ -11,8 +11,10 @@ import 'package:injectable/injectable.dart' as _i2;
 import '../app/data/comics_data/providers/api/comics_api_provider.dart' as _i5;
 import '../app/data/comics_data/providers/api/i_comics_api_provider.dart'
     as _i4;
+import '../app/domain/comics_domain/repository/comics_repository.dart' as _i7;
+import '../app/domain/comics_domain/repository/i_comics_repository.dart' as _i6;
 import 'http_module/http_module.dart'
-    as _i6; // ignore_for_file: unnecessary_lambdas
+    as _i8; // ignore_for_file: unnecessary_lambdas
 
 // ignore_for_file: lines_longer_than_80_chars
 /// initializes the registration of provided dependencies inside of [GetIt]
@@ -22,7 +24,8 @@ _i1.GetIt $initGetIt(_i1.GetIt get,
   final httpModule = _$HttpModule();
   gh.factory<_i3.Dio>(() => httpModule.dio);
   gh.singleton<_i4.IComicsApiProvider>(_i5.ComicsApiProvider());
+  gh.singleton<_i6.IComicsRepository>(_i7.ComicsRepository());
   return get;
 }
 
-class _$HttpModule extends _i6.HttpModule {}
+class _$HttpModule extends _i8.HttpModule {}
