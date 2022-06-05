@@ -1,6 +1,20 @@
+import 'package:comics_app/app/data/comics_data/providers/api/i_comics_api_provider.dart';
+import 'package:comics_app/app/data/comics_data/providers/api/model/request/get_comic_detail_request.dart';
+import 'package:comics_app/app/data/comics_data/providers/api/model/request/get_comics_request.dart';
+import 'package:comics_app/app/domain/comics_domain/repository/i_comics_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
+import 'di/get_it.dart';
+
+Future<void> main() async {
+  await dotenv.load();
+  configureDependencies();
+
+  final response = await getIt.get<IComicsApiProvider>().getComicDetail(
+      GetComicDetailRequest(
+          detailUrl: "https://comicvine.gamespot.com/api/issue/4000-153/"));
+
   runApp(const MyApp());
 }
 
