@@ -1,10 +1,19 @@
 part of 'comic_bloc.dart';
 
 abstract class ComicState extends Equatable {
-  const ComicState();
-}
+  final Comic? comic;
 
-class ComicInitial extends ComicState {
+  const ComicState({this.comic});
   @override
   List<Object> get props => [];
+}
+
+class ComicInitial extends ComicState {}
+
+class ComicPageState extends ComicState {}
+
+class ShowComicListState extends ComicState {}
+
+class ShowComicDetailState extends ComicState {
+  const ShowComicDetailState({super.comic});
 }

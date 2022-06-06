@@ -41,9 +41,13 @@ enum OrderType { orderASC, orderDESC }
 class RequestFilters extends Equatable {
   final OrderType order;
   final String dateRange;
+  final String requiredFields;
 
-  const RequestFilters({this.order = OrderType.orderDESC, this.dateRange = ''});
+  const RequestFilters(
+      {this.order = OrderType.orderDESC,
+      this.dateRange = '',
+      this.requiredFields = ''});
 
   @override
-  List<Object> get props => [order, dateRange];
+  List<Object> get props => [order, dateRange, requiredFields];
 }

@@ -13,12 +13,12 @@ import 'package:injectable/injectable.dart';
 class ComicsApiProvider implements IComicsApiProvider {
   static const key = String.fromEnvironment('API_KEY');
 
-  final Dio http = getIt<Dio>();
+  final Dio http = getIt.get<Dio>();
 
   @override
   Future<GetComicsResponse> getComics(GetComicsRequest getComicsRequest) async {
     try {
-      final queryParams = _setGetComicsQueryParams(getComicsRequest);
+      final queryParams = _getComicsQueryParams(getComicsRequest);
       final response = await http.get('/issues', queryParameters: queryParams);
 
       return GetComicsResponse.fromJson(response.data);
@@ -34,9 +34,14 @@ class ComicsApiProvider implements IComicsApiProvider {
   Future<GetComicDetailResponse> getComicDetail(
       GetComicDetailRequest getComicDetailRequest) async {
     try {
+      final queryParams = _getBaseQueryParams(
+          limit: 1, format: getComicDetailRequest.responseFormat);
+      if (getComicDetailRequest.requiredFields.isNotEmpty) {
+        queryParams['fields_list'] = getComicDetailRequest.requiredFields;
+      }
+
       final response = await http.get(getComicDetailRequest.detailUrl,
-          queryParameters: _getBaseQueryParams(
-              limit: 1, format: getComicDetailRequest.responseFormat));
+          queryParameters: queryParams);
 
       return GetComicDetailResponse.fromJson(response.data);
     } on DioError catch (error) {
@@ -47,7 +52,7 @@ class ComicsApiProvider implements IComicsApiProvider {
     }
   }
 
-  Map<String, dynamic> _setGetComicsQueryParams(
+  Map<String, dynamic> _getComicsQueryParams(
       GetComicsRequest getComicsRequest) {
     final queryParams = _getBaseQueryParams(
         limit: getComicsRequest.maxPageLength,
@@ -60,6 +65,8 @@ class ComicsApiProvider implements IComicsApiProvider {
     queryParams['sort'] = getComicsRequest.filters.order == OrderType.orderDESC
         ? 'date_added:desc'
         : 'date_added:asc';
+
+    queryParams['field_list'] = getComicsRequest.filters.requiredFields;
     return queryParams;
   }
 
@@ -74,22 +81,24 @@ class ComicsApiProvider implements IComicsApiProvider {
     if (filters.dateRange.isNotEmpty && filters.dateRange.contains('|')) {
       filterString = 'date_added:${filters.dateRange}';
     }
+
     return filterString;
   }
 
   DioException _handleDioError(DioError error) {
+    final pathRequested = 'PATH REQUESTED: ${error.requestOptions.path}';
     switch (error.type) {
       case DioErrorType.response:
         return DioException(
             message: "Comics api response exception: ${error.toString()}",
-            body: error.requestOptions.path,
+            body: pathRequested,
             code: 'Code error: ${error.response?.statusCode ?? ''} ');
 
       case DioErrorType.connectTimeout:
         return DioException(
             message:
                 "Comics api connection timeout exception: ${error.toString()}",
-            body: error.requestOptions.path,
+            body: pathRequested,
             code:
                 'Code error: ${error.response?.statusCode?.toString() ?? ''}');
 
@@ -97,7 +106,7 @@ class ComicsApiProvider implements IComicsApiProvider {
         return DioException(
             message:
                 "Comics api sending timeout exception: ${error.toString()}",
-            body: error.requestOptions.path,
+            body: pathRequested,
             code:
                 'Code error: ${error.response?.statusCode?.toString() ?? ''}');
 
@@ -105,7 +114,7 @@ class ComicsApiProvider implements IComicsApiProvider {
         return DioException(
             message:
                 "Comics api receive timeout exception: ${error.toString()}",
-            body: error.requestOptions.path,
+            body: pathRequested,
             code:
                 'Code error: ${error.response?.statusCode?.toString() ?? ''}');
 
@@ -113,14 +122,14 @@ class ComicsApiProvider implements IComicsApiProvider {
         return DioException(
             message:
                 "Comics api request canceled exception: ${error.toString()}",
-            body: error.requestOptions.path,
+            body: pathRequested,
             code:
                 'Code error: ${error.response?.statusCode?.toString() ?? ''}');
 
       case DioErrorType.other:
         return DioException(
             message: "Comics api unknown exception: ${error.toString()}",
-            body: error.requestOptions.path,
+            body: pathRequested,
             code:
                 'Code error: ${error.response?.statusCode?.toString() ?? ''}');
     }
