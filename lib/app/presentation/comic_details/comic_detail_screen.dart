@@ -1,28 +1,42 @@
-import 'package:comics_app/app/domain/comics_domain/entities/comic.dart';
-import 'package:comics_app/app/presentation/comics/details/sections/characters/characters_section.dart';
-import 'package:comics_app/app/presentation/comics/details/sections/image/image_section.dart';
-import 'package:comics_app/app/presentation/comics/details/sections/locations/locations_section.dart';
-import 'package:comics_app/app/presentation/comics/details/sections/teams/team_section.dart';
+import 'package:comics_app/app/domain/comics_domain/entities/comic_detail.dart';
+import 'package:comics_app/app/presentation/comic_details/bloc/comic_detail_bloc.dart';
+import 'package:comics_app/app/presentation/comic_details/sections/characters/characters_section.dart';
+import 'package:comics_app/app/presentation/comic_details/sections/image/image_section.dart';
+import 'package:comics_app/app/presentation/comic_details/sections/locations/locations_section.dart';
+import 'package:comics_app/app/presentation/comic_details/sections/teams/team_section.dart';
 import 'package:comics_app/app/presentation/common/sizes/app_sizes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ComicDetailScreen extends StatelessWidget {
   const ComicDetailScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraint) {
-      if (constraint.maxWidth <= AppSizes.splitLayoutWidthLimit) {
-        return ComicDetailList();
-      } else {
-        return ComicDetailSplitted();
-      }
-    });
+    return BlocConsumer<ComicDetailBloc, ComicDetailState>(
+      listener: (context, state) {},
+      builder: (context, state) {
+        if (state is ComicDetailLoadingState) {
+          return Container(
+            color: Colors.white,
+          );
+        }
+        return LayoutBuilder(builder: (context, constraint) {
+          if (constraint.maxWidth <= AppSizes.splitLayoutWidthLimit) {
+            return ComicDetailList(comicDetail: state.comicDetail);
+          } else {
+            return ComicDetailSplit(comicDetail: state.comicDetail);
+          }
+        });
+      },
+    );
   }
 }
 
-class ComicDetailSplitted extends StatelessWidget {
-  const ComicDetailSplitted({Key? key}) : super(key: key);
+class ComicDetailSplit extends StatelessWidget {
+  final ComicDetail comicDetail;
+  const ComicDetailSplit({Key? key, required this.comicDetail})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,19 +46,19 @@ class ComicDetailSplitted extends StatelessWidget {
         Expanded(
             flex: 3,
             child: ListView(
-              children: const [
-                CharacterSection(characters: []),
-                TeamSection(teams: []),
-                LocationSection(locations: []),
+              children: [
+                CharacterSection(characters: comicDetail.characterCredits),
+                TeamSection(teams: comicDetail.teamCredits),
+                LocationSection(locations: comicDetail.locationCredits),
               ],
             )),
-        const Padding(
-          padding: EdgeInsets.all(30.0),
+        Padding(
+          padding: const EdgeInsets.all(30.0),
           child: SizedBox(
             width: 400,
             height: 700,
             child: ImageSection(
-              imageUrl: "",
+              imageUrl: comicDetail.originalImageUrl,
             ),
           ),
         ),
@@ -54,7 +68,9 @@ class ComicDetailSplitted extends StatelessWidget {
 }
 
 class ComicDetailList extends StatelessWidget {
-  const ComicDetailList({Key? key}) : super(key: key);
+  final ComicDetail comicDetail;
+  const ComicDetailList({Key? key, required this.comicDetail})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -62,10 +78,20 @@ class ComicDetailList extends StatelessWidget {
       children: [
         Expanded(
             child: ListView(
-          children: const [
-            CharacterSection(characters: []),
-            TeamSection(teams: []),
-            LocationSection(locations: []),
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: SizedBox(
+                width: 200,
+                height: 300,
+                child: ImageSection(
+                  imageUrl: comicDetail.originalImageUrl,
+                ),
+              ),
+            ),
+            CharacterSection(characters: comicDetail.characterCredits),
+            TeamSection(teams: comicDetail.teamCredits),
+            LocationSection(locations: comicDetail.locationCredits),
           ],
         ))
       ],

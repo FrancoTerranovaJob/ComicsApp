@@ -15,9 +15,18 @@ class HomePage extends StatelessWidget {
       body: SafeArea(
           child: Column(
         children: [
-          Expanded(child: Center(child: Text('COMIC BOOK'))),
           Expanded(
-            flex: 5,
+              child: SizedBox(
+            width: double.infinity,
+            height: 300,
+            child: Text(
+              'COMIC BOOK',
+              style: Theme.of(context).textTheme.headline3,
+              textAlign: TextAlign.center,
+            ),
+          )),
+          Expanded(
+            flex: 7,
             child: BlocProvider(
               lazy: false,
               create: (context) => ComicBloc(ShowComicListState()),

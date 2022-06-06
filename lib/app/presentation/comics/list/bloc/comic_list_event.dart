@@ -9,7 +9,7 @@ class ComicListDisableGridLayoutEvent extends ComicListEvent {
   List<Object?> get props => [];
 }
 
-class ComicListEnableGridLayoutEvent extends ComicListEvent {
+class ComicListDisableChangeLayoutEvent extends ComicListEvent {
   @override
   List<Object?> get props => [];
 }
@@ -18,6 +18,17 @@ class ChangeLayoutEvent extends ComicListEvent {
   final LayoutType layoutType;
 
   ChangeLayoutEvent({required this.layoutType});
+
   @override
   List<Object?> get props => [layoutType];
+}
+
+class SearchComicsEvent extends ComicListEvent {
+  @override
+  List<Object> get props => [];
+}
+
+class ComicListEnableChangeLayoutEvent extends ComicListEvent {
+  @override
+  List<Object?> get props => [];
 }

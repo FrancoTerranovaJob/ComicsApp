@@ -1,9 +1,8 @@
-import 'package:comics_app/app/presentation/common/sizes/app_sizes.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../domain/comics_domain/entities/comic_detail.dart';
-import '../../../../common/widgets/section.dart';
-import '../../../../common/widgets/simple_tile.dart';
+import '../../../../domain/comics_domain/entities/comic_detail.dart';
+import '../../../common/widgets/section.dart';
+import '../../../common/widgets/simple_tile.dart';
 
 class TeamSection extends StatelessWidget {
   final List<Team> teams;
@@ -28,7 +27,7 @@ class TeamSection extends StatelessWidget {
       getTitle: () {
         return Text(
           'Teams',
-          style: Theme.of(context).textTheme.headline3,
+          style: Theme.of(context).textTheme.headlineMedium,
         );
       },
       getBodyContent: () {

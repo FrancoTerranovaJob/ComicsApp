@@ -1,9 +1,8 @@
-import 'package:comics_app/app/presentation/common/sizes/app_sizes.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../domain/comics_domain/entities/comic_detail.dart';
-import '../../../../common/widgets/section.dart';
-import '../../../../common/widgets/simple_tile.dart';
+import '../../../../domain/comics_domain/entities/comic_detail.dart';
+import '../../../common/widgets/section.dart';
+import '../../../common/widgets/simple_tile.dart';
 
 class LocationSection extends StatelessWidget {
   final List<LocationCredits> locations;
@@ -28,7 +27,7 @@ class LocationSection extends StatelessWidget {
       getTitle: () {
         return Text(
           'Locations',
-          style: Theme.of(context).textTheme.headline3,
+          style: Theme.of(context).textTheme.headlineMedium,
         );
       },
       getBodyContent: () {

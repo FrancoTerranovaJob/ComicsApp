@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Comics App',
-      theme: AppTheme.getTheme(context),
+      theme: Theme.of(context),
       home: const HomePage(),
     );
   }

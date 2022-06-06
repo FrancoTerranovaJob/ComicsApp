@@ -39,3 +39,10 @@ class ComicListLoadingState extends ComicListState {
       required super.changeLayoutEnabled,
       required super.comics});
 }
+
+class ComicListLoadingMoreComicsState extends ComicListState {
+  ComicListLoadingMoreComicsState(
+      {required super.layoutType,
+      required super.changeLayoutEnabled,
+      required super.comics});
+}

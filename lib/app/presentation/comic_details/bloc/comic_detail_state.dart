@@ -1,10 +1,25 @@
 part of 'comic_detail_bloc.dart';
 
 abstract class ComicDetailState extends Equatable {
-  const ComicDetailState();
+  final ComicDetail comicDetail;
+  final Comic comic;
+  const ComicDetailState({required this.comicDetail, required this.comic});
+  @override
+  List<Object> get props => [comicDetail, comic];
 }
 
 class ComicDetailInitial extends ComicDetailState {
-  @override
-  List<Object> get props => [];
+  ComicDetailInitial({required super.comicDetail, required super.comic});
+}
+
+class ComicDetailDataState extends ComicDetailState {
+  ComicDetailDataState({required super.comicDetail, required super.comic});
+}
+
+class ComicDetailLoadingState extends ComicDetailState {
+  ComicDetailLoadingState({required super.comicDetail, required super.comic});
+}
+
+class ComicDetailErrorState extends ComicDetailState {
+  ComicDetailErrorState({required super.comicDetail, required super.comic});
 }

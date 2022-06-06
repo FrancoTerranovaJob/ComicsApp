@@ -20,24 +20,23 @@ class Section<T> extends StatelessWidget {
   }
 
   List<Widget> _getContent() {
+    final widgetList = <Widget>[];
     var content = getBodyContent();
-    if (content.isEmpty) {
-      content = [];
-    }
-    return List.generate(content.length, (index) {
-      if (index == 0) {
-        return SizedBox(
-            width: double.infinity,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: getTitle(),
-            ));
-      } else {
-        return Padding(
+    widgetList.add(
+      SizedBox(
+          width: double.infinity,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: getTitle(),
+          )),
+    );
+    widgetList.add(const Divider());
+    widgetList.addAll(List.generate(content.length, (index) {
+      return Padding(
           padding: const EdgeInsets.all(8.0),
-          child: contentWidget(content[index]),
-        );
-      }
-    });
+          child: contentWidget(content[index]));
+    }));
+
+    return widgetList;
   }
 }

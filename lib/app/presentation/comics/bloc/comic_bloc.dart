@@ -14,5 +14,9 @@ class ComicBloc extends Bloc<ComicEvent, ComicState> {
     on<OnComicPressedEvent>((event, emit) {
       emit(ShowComicDetailState(comic: event.comic));
     });
+
+    on<OnPopComicDetail>((event, emit) {
+      emit(ComicPageState());
+    });
   }
 }

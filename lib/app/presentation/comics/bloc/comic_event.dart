@@ -11,3 +11,8 @@ class OnComicPressedEvent extends ComicEvent {
   @override
   List<Object> get props => [comic];
 }
+
+class OnPopComicDetail extends ComicEvent {
+  @override
+  List<Object> get props => [];
+}

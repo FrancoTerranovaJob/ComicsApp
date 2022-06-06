@@ -1,9 +1,8 @@
-import 'package:comics_app/app/presentation/common/sizes/app_sizes.dart';
 import 'package:comics_app/app/presentation/common/widgets/section.dart';
 import 'package:comics_app/app/presentation/common/widgets/simple_tile.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../domain/comics_domain/entities/comic_detail.dart';
+import '../../../../domain/comics_domain/entities/comic_detail.dart';
 
 class CharacterSection extends StatelessWidget {
   final List<Character> characters;
@@ -29,7 +28,7 @@ class CharacterSection extends StatelessWidget {
       getTitle: () {
         return Text(
           'Characters',
-          style: Theme.of(context).textTheme.headline3,
+          style: Theme.of(context).textTheme.headlineMedium,
         );
       },
       getBodyContent: () {
