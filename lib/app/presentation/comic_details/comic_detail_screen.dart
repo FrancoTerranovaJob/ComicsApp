@@ -1,4 +1,6 @@
+import 'package:comics_app/app/domain/comics_domain/entities/comic.dart';
 import 'package:comics_app/app/presentation/comics/details/sections/characters/characters_section.dart';
+import 'package:comics_app/app/presentation/comics/details/sections/image/image_section.dart';
 import 'package:comics_app/app/presentation/comics/details/sections/locations/locations_section.dart';
 import 'package:comics_app/app/presentation/comics/details/sections/teams/team_section.dart';
 import 'package:comics_app/app/presentation/common/sizes/app_sizes.dart';
@@ -36,12 +38,14 @@ class ComicDetailSplitted extends StatelessWidget {
                 LocationSection(locations: []),
               ],
             )),
-        Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: Container(
+        const Padding(
+          padding: EdgeInsets.all(30.0),
+          child: SizedBox(
             width: 400,
             height: 700,
-            color: Colors.red,
+            child: ImageSection(
+              imageUrl: "",
+            ),
           ),
         ),
       ],
