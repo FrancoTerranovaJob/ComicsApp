@@ -1,7 +1,6 @@
 import 'package:comics_app/app/presentation/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'app/theme/app_theme.dart';
 import 'di/get_it.dart';
 
 Future<void> main() async {
