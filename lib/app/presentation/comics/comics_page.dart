@@ -19,7 +19,7 @@ class ComicsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final comicBloc = BlocProvider.of<ComicBloc>(context);
     return BlocConsumer<ComicBloc, ComicState>(
-      listener: (bContext, state) {
+      listener: (bContext, state) async {
         if (state is ShowComicDetailState) {
           Navigator.of(context)
               .push(MaterialPageRoute(

@@ -27,7 +27,10 @@ class TeamSection extends StatelessWidget {
       getTitle: () {
         return Text(
           'Teams',
-          style: Theme.of(context).textTheme.headlineMedium,
+          style: Theme.of(context)
+              .textTheme
+              .headlineMedium!
+              .copyWith(color: Colors.black, fontWeight: FontWeight.bold),
         );
       },
       getBodyContent: () {

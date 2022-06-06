@@ -5,8 +5,10 @@ import 'package:comics_app/app/presentation/comics/list/bloc/comic_list_bloc.dar
 import 'package:comics_app/app/presentation/comics/list/sections/comics_grid_layout.dart';
 import 'package:comics_app/app/presentation/comics/list/sections/comics_list.dart';
 import 'package:comics_app/app/presentation/common/sizes/app_sizes.dart';
+import 'package:comics_app/app/presentation/common/widgets/message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 
 class ComicListScreen extends StatelessWidget {
   final ScrollController scrollController = ScrollController();
@@ -17,16 +19,36 @@ class ComicListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final comicBloc = BlocProvider.of<ComicListBloc>(context);
     return BlocConsumer<ComicListBloc, ComicListState>(
-      buildWhen: (p, c) => c is! ComicListLoadingMoreComicsState,
-      listener: (context, state) {},
+      buildWhen: (p, c) =>
+          c is! ComicListLoadingMoreComicsState && c is! ComicListErrorState,
+      listener: (context, state) async {
+        if (state is ComicListErrorState) {
+          await showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return Message(
+                  message: 'Something went wrong!',
+                  onClose: () {
+                    Navigator.of(context).pop();
+                  });
+            },
+          );
+        }
+      },
       builder: (context, state) {
+        if (state is ComicListLoadingState) {
+          return Container(
+            color: Colors.white,
+            child: Center(child: Lottie.asset('assets/progress/progress.json')),
+          );
+        }
         return Column(children: [
           const Expanded(child: ComicListHeader()),
           const Divider(),
           LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               _handleLayoutChanges(constraints, context, comicBloc);
-              return Container(
+              return const SizedBox(
                 width: 0,
                 height: 0,
               );
@@ -34,7 +56,8 @@ class ComicListScreen extends StatelessWidget {
           ),
           Expanded(
               flex: 7,
-              child: _buildLayout(state.layoutType, state.comics, context))
+              child: _buildLayout(state.layoutType, state.comics, context)),
+          const ComicListFooter()
         ]);
       },
     );
@@ -158,5 +181,25 @@ class ComicListHeader extends StatelessWidget {
   void _addComicListBlocEvent(ComicListEvent event, BuildContext context) {
     final comicsListBloc = BlocProvider.of<ComicListBloc>(context);
     comicsListBloc.add(event);
+  }
+}
+
+class ComicListFooter extends StatelessWidget {
+  const ComicListFooter({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ComicListBloc, ComicListState>(
+      builder: (context, state) {
+        return Visibility(
+            visible: state is ComicListLoadingMoreComicsState,
+            child: Container(
+              height: 100,
+              color: Colors.white,
+              child:
+                  Center(child: Lottie.asset('assets/progress/progress.json')),
+            ));
+      },
+    );
   }
 }

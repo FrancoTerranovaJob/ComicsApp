@@ -7,6 +7,7 @@ import 'package:comics_app/app/presentation/comic_details/sections/teams/team_se
 import 'package:comics_app/app/presentation/common/sizes/app_sizes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lottie/lottie.dart';
 
 class ComicDetailScreen extends StatelessWidget {
   const ComicDetailScreen({Key? key}) : super(key: key);
@@ -19,6 +20,7 @@ class ComicDetailScreen extends StatelessWidget {
         if (state is ComicDetailLoadingState) {
           return Container(
             color: Colors.white,
+            child: Center(child: Lottie.asset('assets/progress/progress.json')),
           );
         }
         return LayoutBuilder(builder: (context, constraint) {

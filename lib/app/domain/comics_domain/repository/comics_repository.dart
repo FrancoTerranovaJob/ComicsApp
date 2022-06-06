@@ -22,7 +22,7 @@ class ComicsRepository implements IComicsRepository {
   Future<ComicList> getComics() async {
     try {
       final comicsResponse = await apiProvider.getComics(GetComicsRequest(
-          maxPageLength: 40,
+          maxPageLength: 30,
           filters: RequestFilters(
               dateRange: _getFormattedDateFilter(),
               requiredFields: _getRequiredFieldsFilter()),
@@ -118,7 +118,7 @@ class ComicsRepository implements IComicsRepository {
     Set what latest comics mean in the below function. Defaults to init of the current year
    */
   String _getFormattedDateFilter() {
-    final startOfCurrentYear = DateTime(DateTime.now().year, 6, 5);
+    final startOfCurrentYear = DateTime(DateTime.now().year, 1, 1);
     final currentDate = DateTime.now();
 
     final formattedStartOfYearDate = dateFormatter.format(startOfCurrentYear);

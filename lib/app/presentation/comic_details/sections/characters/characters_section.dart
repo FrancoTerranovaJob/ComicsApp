@@ -28,7 +28,10 @@ class CharacterSection extends StatelessWidget {
       getTitle: () {
         return Text(
           'Characters',
-          style: Theme.of(context).textTheme.headlineMedium,
+          style: Theme.of(context)
+              .textTheme
+              .headlineMedium!
+              .copyWith(color: Colors.black, fontWeight: FontWeight.bold),
         );
       },
       getBodyContent: () {

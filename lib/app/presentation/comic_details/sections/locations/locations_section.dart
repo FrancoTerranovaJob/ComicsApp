@@ -27,7 +27,10 @@ class LocationSection extends StatelessWidget {
       getTitle: () {
         return Text(
           'Locations',
-          style: Theme.of(context).textTheme.headlineMedium,
+          style: Theme.of(context)
+              .textTheme
+              .headlineMedium!
+              .copyWith(color: Colors.black, fontWeight: FontWeight.bold),
         );
       },
       getBodyContent: () {
