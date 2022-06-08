@@ -87,11 +87,11 @@ class ComicsRepository implements IComicsRepository {
             .map((char) => Character(
                 char.apiDetailUrl, char.id, char.name, char.siteDetailUrl))
             .toList(),
-        teamCredits: response.characterCredits
+        teamCredits: response.teamCredits
             .map((team) =>
                 Team(team.apiDetailUrl, team.id, team.name, team.siteDetailUrl))
             .toList(),
-        locationCredits: response.characterCredits
+        locationCredits: response.locationCredits
             .map((loc) => LocationCredits(
                 loc.apiDetailUrl, loc.id, loc.name, loc.siteDetailUrl))
             .toList(),
