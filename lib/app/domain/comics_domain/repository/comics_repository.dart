@@ -12,21 +12,16 @@ import 'package:comics_app/app/domain/comics_domain/repository/i_comics_reposito
 import 'package:comics_app/app/domain/comics_domain/repository/model/comics_repository_exceptions.dart';
 import 'package:comics_app/di/get_it.dart';
 import 'package:injectable/injectable.dart';
-import 'package:intl/intl.dart';
 
 @LazySingleton(as: IComicsRepository)
 class ComicsRepository implements IComicsRepository {
   final apiProvider = getIt.get<IComicsApiProvider>();
-  final dateFormatter = DateFormat('yyyy-MM-dd');
+
   @override
   Future<ComicList> getComics() async {
     try {
-      final comicsResponse = await apiProvider.getComics(GetComicsRequest(
-          maxPageLength: 30,
-          filters: RequestFilters(
-              dateRange: _getFormattedDateFilter(),
-              requiredFields: _getRequiredFieldsFilter()),
-          offset: 0));
+      final comicsResponse = await apiProvider
+          .getComics(const GetComicsRequest(maxPageLength: 30, offset: 0));
       return ComicList(
         comics: _parseComicResponseToComic(comicsResponse.comics),
         offset: 0,
@@ -50,13 +45,11 @@ class ComicsRepository implements IComicsRepository {
       return comicList;
     } else {
       try {
-        final newComicListResponse = await apiProvider.getComics(
-            GetComicsRequest(
-                maxPageLength: 30,
-                offset: newOffset,
-                filters: RequestFilters(
-                    dateRange: _getFormattedDateFilter(),
-                    requiredFields: _getRequiredFieldsFilter())));
+        final newComicListResponse =
+            await apiProvider.getComics(GetComicsRequest(
+          maxPageLength: 30,
+          offset: newOffset,
+        ));
 
         final newComicList = <Comic>[];
         newComicList.addAll(comicList.comics);
@@ -79,8 +72,8 @@ class ComicsRepository implements IComicsRepository {
   Future<ComicDetail> getComicDetail(Comic comic) async {
     try {
       final response = await apiProvider.getComicDetail(GetComicDetailRequest(
-          detailUrl: comic.comicDetailUrl,
-          requiredFields: _getComicDetailRequiredFieldsFilter()));
+        detailUrl: comic.comicDetailUrl,
+      ));
       return ComicDetail(
         originalImageUrl: response.imageUrl,
         characterCredits: response.characterCredits
@@ -112,29 +105,6 @@ class ComicsRepository implements IComicsRepository {
             comicNumber: comic.comicNumber,
             comicDetailUrl: comic.detailUrl))
         .toList();
-  }
-
-  /*
-    Set what latest comics mean in the below function. Defaults to init of the current year
-   */
-  String _getFormattedDateFilter() {
-    final startOfCurrentYear = DateTime(DateTime.now().year, 1, 1);
-    final currentDate = DateTime.now();
-
-    final formattedStartOfYearDate = dateFormatter.format(startOfCurrentYear);
-    final formattedCurrentDate = dateFormatter.format(currentDate);
-    return '$formattedStartOfYearDate|$formattedCurrentDate';
-  }
-
-  /*
-    filtering fields for improve request performance
-   */
-  String _getRequiredFieldsFilter() {
-    return 'id,image,date_added,name,api_detail_url,issue_number';
-  }
-
-  String _getComicDetailRequiredFieldsFilter() {
-    return 'image,character_credits,team_credits,location_credits';
   }
 
   DomainException _handleApiExceptions(ApiException apiException) {

@@ -18,8 +18,8 @@ class ComicsApiProvider implements IComicsApiProvider {
   @override
   Future<GetComicsResponse> getComics(GetComicsRequest getComicsRequest) async {
     try {
-      final queryParams = _getComicsQueryParams(getComicsRequest);
-      final response = await http.get('/issues', queryParameters: queryParams);
+      final response = await http.post('http://127.0.0.1:8081/issues',
+          queryParameters: _getComicsQueryParams(getComicsRequest));
 
       return GetComicsResponse.fromJson(response.data);
     } on DioError catch (error) {
@@ -34,14 +34,8 @@ class ComicsApiProvider implements IComicsApiProvider {
   Future<GetComicDetailResponse> getComicDetail(
       GetComicDetailRequest getComicDetailRequest) async {
     try {
-      final queryParams = _getBaseQueryParams(
-          limit: 1, format: getComicDetailRequest.responseFormat);
-      if (getComicDetailRequest.requiredFields.isNotEmpty) {
-        queryParams['fields_list'] = getComicDetailRequest.requiredFields;
-      }
-
-      final response = await http.get(getComicDetailRequest.detailUrl,
-          queryParameters: queryParams);
+      final response = await http.post('http://127.0.0.1:8081/issue_detail',
+          queryParameters: {'detail_url': getComicDetailRequest.detailUrl});
 
       return GetComicDetailResponse.fromJson(response.data);
     } on DioError catch (error) {
@@ -54,35 +48,15 @@ class ComicsApiProvider implements IComicsApiProvider {
 
   Map<String, dynamic> _getComicsQueryParams(
       GetComicsRequest getComicsRequest) {
-    final queryParams = _getBaseQueryParams(
-        limit: getComicsRequest.maxPageLength,
-        format: getComicsRequest.responseFormat);
+    final queryParams = <String, dynamic>{};
+    queryParams['limit'] = getComicsRequest.maxPageLength;
     queryParams['offset'] = getComicsRequest.offset;
-    final stFilters = _parseFiltersToString(getComicsRequest.filters);
-    if (stFilters.isNotEmpty) {
-      queryParams['filter'] = stFilters;
-    }
-    queryParams['sort'] = getComicsRequest.filters.order == OrderType.orderDESC
-        ? 'date_added:desc'
-        : 'date_added:asc';
-
-    queryParams['field_list'] = getComicsRequest.filters.requiredFields;
     return queryParams;
   }
 
   Map<String, dynamic> _getBaseQueryParams(
       {required int limit, required String format}) {
     return {'api_key': key, 'format': format, 'limit': limit};
-  }
-
-  String _parseFiltersToString(RequestFilters filters) {
-    var filterString = '';
-
-    if (filters.dateRange.isNotEmpty && filters.dateRange.contains('|')) {
-      filterString = 'date_added:${filters.dateRange}';
-    }
-
-    return filterString;
   }
 
   DioException _handleDioError(DioError error) {
