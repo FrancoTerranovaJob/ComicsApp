@@ -11,14 +11,12 @@ import 'package:injectable/injectable.dart';
 
 @Singleton(as: IComicsApiProvider)
 class ComicsApiProvider implements IComicsApiProvider {
-  static const key = String.fromEnvironment('API_KEY');
-
   final Dio http = getIt.get<Dio>();
 
   @override
   Future<GetComicsResponse> getComics(GetComicsRequest getComicsRequest) async {
     try {
-      final response = await http.post('http://127.0.0.1:8081/issues',
+      final response = await http.post('/issues',
           queryParameters: _getComicsQueryParams(getComicsRequest));
 
       return GetComicsResponse.fromJson(response.data);
@@ -34,7 +32,7 @@ class ComicsApiProvider implements IComicsApiProvider {
   Future<GetComicDetailResponse> getComicDetail(
       GetComicDetailRequest getComicDetailRequest) async {
     try {
-      final response = await http.post('http://127.0.0.1:8081/issue_detail',
+      final response = await http.post('/issue_detail',
           queryParameters: {'detail_url': getComicDetailRequest.detailUrl});
 
       return GetComicDetailResponse.fromJson(response.data);
@@ -52,11 +50,6 @@ class ComicsApiProvider implements IComicsApiProvider {
     queryParams['limit'] = getComicsRequest.maxPageLength;
     queryParams['offset'] = getComicsRequest.offset;
     return queryParams;
-  }
-
-  Map<String, dynamic> _getBaseQueryParams(
-      {required int limit, required String format}) {
-    return {'api_key': key, 'format': format, 'limit': limit};
   }
 
   DioException _handleDioError(DioError error) {
