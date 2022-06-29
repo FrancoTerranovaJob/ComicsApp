@@ -2,6 +2,7 @@
 
   This flutter web app does a pair of requests to the comics api https://comicvine.gamespot.com/api/
 
+# Set up
   In order to make the requests to work, I have set up a simple dart server. So please, make sure that you are in /comics_server folder
   for example, in a console, and run the following command before start the web app: 
 
